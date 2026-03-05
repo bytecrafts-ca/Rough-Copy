@@ -1,4 +1,4 @@
-# Ground Truth
+# Rough Copy
 
 A blog about current events and ideas people search for: tech, climate, culture. Clear, short articles.
 

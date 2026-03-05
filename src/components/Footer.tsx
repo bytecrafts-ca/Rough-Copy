@@ -5,7 +5,7 @@ export function Footer() {
     <footer className="footer">
       <div className="footer-inner">
         <div className="footer-brand">
-          <Link to="/" className="footer-logo">Ground Truth</Link>
+          <Link to="/" className="footer-logo">Rough Copy</Link>
           <p className="footer-tagline">What’s happening, explained.</p>
         </div>
         <nav className="footer-nav" aria-label="Footer">
@@ -15,7 +15,7 @@ export function Footer() {
           <Link to="/category/climate">Climate</Link>
           <Link to="/category/culture">Culture</Link>
         </nav>
-        <p className="footer-copy">&copy; {new Date().getFullYear()} Ground Truth.</p>
+        <p className="footer-copy">&copy; {new Date().getFullYear()} Rough Copy.</p>
       </div>
     </footer>
   )

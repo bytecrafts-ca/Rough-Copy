@@ -6,7 +6,7 @@ export function AboutPage() {
     <div className="page">
       <section className="hero hero--small">
         <div className="container container--narrow">
-          <h1 className="hero-title">About Ground Truth</h1>
+          <h1 className="hero-title">About Rough Copy</h1>
           <p className="hero-subtitle">
             We explain what’s going on — in world affairs, tech, climate, and culture — so you can get to the point fast.
           </p>
@@ -16,7 +16,7 @@ export function AboutPage() {
       <div className="container container--narrow">
         <div className="article-body">
           <p>
-            Ground Truth is a blog that focuses on clarity. We cover current events, useful ideas, and the kind of questions people actually search for: why something is happening, how it works, and what to do about it.
+            Rough Copy is a blog that focuses on clarity. We cover current events, useful ideas, and the kind of questions people actually search for: why something is happening, how it works, and what to do about it.
           </p>
           <p>
             No fluff, no hype. Just clear takes you can read in a few minutes.
