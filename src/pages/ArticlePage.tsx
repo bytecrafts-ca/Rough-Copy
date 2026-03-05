@@ -1,6 +1,14 @@
 import { Link, useParams } from 'react-router-dom'
-import { getArticle } from '../data/content'
+import { getArticle, getCategory } from '../data/content'
+import { PageMeta } from '../components/PageMeta'
+import { StructuredDataArticle } from '../components/StructuredData'
+import { SITE_NAME } from '../config'
 import '../styles/article.css'
+
+function truncateDescription(text: string, maxLen: number): string {
+  if (text.length <= maxLen) return text
+  return text.slice(0, maxLen - 3).trim() + '...'
+}
 
 export function ArticlePage() {
   const { slug } = useParams<{ slug: string }>()
@@ -15,8 +23,22 @@ export function ArticlePage() {
     )
   }
 
+  const category = getCategory(article.category)
+  const title = `${article.title} — ${SITE_NAME}`
+  const description = truncateDescription(article.excerpt, 160)
+  const path = `/article/${article.slug}`
+
   return (
     <article className="page article-page">
+      <PageMeta title={title} description={description} path={path} />
+      <StructuredDataArticle
+        headline={article.title}
+        description={description}
+        datePublished={article.date}
+        path={path}
+        categoryName={category?.name ?? article.category}
+        categoryPath={`/category/${article.category}`}
+      />
       <header className="article-header">
         <div className="container container--narrow">
           <Link to={`/category/${article.category}`} className="article-category">

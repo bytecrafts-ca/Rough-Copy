@@ -1,13 +1,21 @@
 import { Link } from 'react-router-dom'
 import { articles, categories } from '../data/content'
+import { PageMeta } from '../components/PageMeta'
+import { StructuredDataHome } from '../components/StructuredData'
 import '../styles/home.css'
 
 const featured = articles.slice(0, 8)
 const rest = articles.slice(8)
 
+const HOME_TITLE = "Rough Copy — What's happening, explained"
+const HOME_DESCRIPTION =
+  "Clear takes on what's happening — tech, climate, culture, and the ideas that shape the day."
+
 export function HomePage() {
   return (
     <div className="page home">
+      <PageMeta title={HOME_TITLE} description={HOME_DESCRIPTION} path="/" />
+      <StructuredDataHome />
       <section className="hero">
         <div className="container">
           <h1 className="hero-title">

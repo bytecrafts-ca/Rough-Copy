@@ -1,9 +1,17 @@
 import { Link } from 'react-router-dom'
+import { PageMeta } from '../components/PageMeta'
+import { StructuredDataAbout } from '../components/StructuredData'
 import '../styles/article.css'
+
+const ABOUT_TITLE = 'About Rough Copy'
+const ABOUT_DESCRIPTION =
+  'We explain what\'s going on — in world affairs, tech, climate, and culture — so you can get to the point fast.'
 
 export function AboutPage() {
   return (
     <div className="page">
+      <PageMeta title={ABOUT_TITLE} description={ABOUT_DESCRIPTION} path="/about" />
+      <StructuredDataAbout />
       <section className="hero hero--small">
         <div className="container container--narrow">
           <h1 className="hero-title">About Rough Copy</h1>

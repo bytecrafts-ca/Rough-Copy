@@ -1,5 +1,8 @@
 import { Link, useParams } from 'react-router-dom'
 import { getCategory, getArticlesByCategory } from '../data/content'
+import { PageMeta } from '../components/PageMeta'
+import { StructuredDataCategory } from '../components/StructuredData'
+import { SITE_NAME } from '../config'
 import '../styles/home.css'
 import '../styles/article.css'
 
@@ -17,8 +20,17 @@ export function CategoryPage() {
     )
   }
 
+  const path = `/category/${category.slug}`
+  const title = `${category.name} — ${SITE_NAME}`
+  const description =
+    category.description.length > 155
+      ? category.description.slice(0, 152) + '...'
+      : category.description
+
   return (
     <div className="page">
+      <PageMeta title={title} description={description} path={path} />
+      <StructuredDataCategory name={category.name} description={category.description} path={path} />
       <section className="hero hero--small">
         <div className="container">
           <h1 className="hero-title">{category.name}</h1>
