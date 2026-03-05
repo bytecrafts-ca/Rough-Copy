@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Strength Checker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --card-bg: #ffffff;
+      --accent: #007aff;
+      --accent-hover: #0056b3;
+      --text: #1d1d1f;
+      --text-muted: #6e6e73;
+      --radius: 16px;
+      --radius-sm: 13px;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+      --shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.08);
+      --weak: #ff3b30;
+      --fair: #ff9500;
+      --good: #ffcc00;
+      --strong: #34c759;
+      --very-strong: #007aff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      line-height: 1.5;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 32px;
+      width: 100%;
+      max-width: 420px;
+      transition: box-shadow 0.3s ease, transform 0.2s ease;
+    }
+
+    .card:focus-within {
+      box-shadow: var(--shadow-hover);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .input-wrap {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .password-input {
+      width: 100%;
+      padding: 14px 48px 14px 16px;
+      font-family: inherit;
+      font-size: 1rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .password-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .password-input:focus {
+      outline: none;
+      background: #ebebed;
+      box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.25);
+    }
+
+    .toggle-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+
+    .toggle-btn:hover {
+      color: var(--accent);
+      background: rgba(0, 122, 255, 0.08);
+    }
+
+    .toggle-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .strength-section {
+      margin-bottom: 24px;
+    }
+
+    .strength-label-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .strength-label {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: color 0.3s ease;
+    }
+
+    .strength-label.has-strength {
+      color: var(--text);
+    }
+
+    .strength-bars {
+      display: flex;
+      gap: 6px;
+      height: 6px;
+      border-radius: 3px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .strength-bar {
+      flex: 1;
+      height: 100%;
+      border-radius: 3px;
+      background: var(--bg);
+      transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .strength-bar.filled {
+      transition: background 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .checklist {
+      list-style: none;
+      margin-bottom: 24px;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      transition: color 0.3s ease;
+    }
+
+    .checklist li.met {
+      color: var(--strong);
+    }
+
+    .check-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #d1d1d6;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.3s ease, background 0.3s ease, transform 0.2s ease;
+    }
+
+    .checklist li.met .check-icon {
+      border-color: var(--strong);
+      background: var(--strong);
+    }
+
+    .check-icon svg {
+      opacity: 0;
+      transform: scale(0.5);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .checklist li.met .check-icon svg {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .copy-btn {
+      width: 100%;
+      padding: 14px 20px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.25s ease, transform 0.15s ease;
+    }
+
+    .copy-btn:hover:not(.copied) {
+      background: var(--accent-hover);
+    }
+
+    .copy-btn:active {
+      transform: scale(0.98);
+    }
+
+    .copy-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .copy-btn.copied {
+      background: var(--strong);
+      pointer-events: none;
+    }
+
+    .ad-container {
+      margin-top: 32px;
+      width: 100%;
+      max-width: 420px;
+      min-height: 100px;
+    }
+
+    .ad-container ins {
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Password Strength Checker</h1>
+    <p class="subtitle">Check how strong your password is in real time.</p>
+
+    <div class="input-wrap">
+      <input
+        type="password"
+        class="password-input"
+        id="password"
+        placeholder="Enter a password"
+        autocomplete="off"
+        aria-label="Password"
+      >
+      <button type="button" class="toggle-btn" id="toggle" aria-label="Show password">
+        <svg id="icon-eye" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <svg id="icon-eye-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none">
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="strength-section">
+      <div class="strength-label-wrap">
+        <span class="strength-label" id="strengthLabel">Strength</span>
+      </div>
+      <div class="strength-bars" role="meter" aria-label="Password strength" aria-valuenow="0" aria-valuemin="0" aria-valuemax="4">
+        <div class="strength-bar" id="bar1"></div>
+        <div class="strength-bar" id="bar2"></div>
+        <div class="strength-bar" id="bar3"></div>
+        <div class="strength-bar" id="bar4"></div>
+      </div>
+    </div>
+
+    <ul class="checklist" aria-label="Password requirements">
+      <li id="req-length">
+        <span class="check-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        At least 8 characters
+      </li>
+      <li id="req-upper">
+        <span class="check-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        Uppercase letter
+      </li>
+      <li id="req-number">
+        <span class="check-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        Number
+      </li>
+      <li id="req-special">
+        <span class="check-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        Special character
+      </li>
+    </ul>
+
+    <button type="button" class="copy-btn" id="copyBtn">Copy Password</button>
+  </main>
+
+  <div class="ad-container">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+         data-ad-slot="XXXXXXXXXX"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <script>
+    (function () {
+      const passwordInput = document.getElementById('password');
+      const toggleBtn = document.getElementById('toggle');
+      const iconEye = document.getElementById('icon-eye');
+      const iconEyeOff = document.getElementById('icon-eye-off');
+      const strengthLabel = document.getElementById('strengthLabel');
+      const bars = [
+        document.getElementById('bar1'),
+        document.getElementById('bar2'),
+        document.getElementById('bar3'),
+        document.getElementById('bar4')
+      ];
+      const strengthMeter = document.querySelector('.strength-bars');
+      const reqLength = document.getElementById('req-length');
+      const reqUpper = document.getElementById('req-upper');
+      const reqNumber = document.getElementById('req-number');
+      const reqSpecial = document.getElementById('req-special');
+      const copyBtn = document.getElementById('copyBtn');
+
+      const LABELS = ['Too Weak', 'Fair', 'Good', 'Strong'];
+      const COLORS = ['#ff3b30', '#ff9500', '#ffcc00', '#34c759', '#007aff'];
+
+      function hasLength(s) { return s.length >= 8; }
+      function hasUpper(s) { return /[A-Z]/.test(s); }
+      function hasNumber(s) { return /\d/.test(s); }
+      function hasSpecial(s) { return /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(s); }
+
+      function getStrength(pwd) {
+        if (!pwd.length) return 0;
+        const criteria = [hasLength(pwd), hasUpper(pwd), hasNumber(pwd), hasSpecial(pwd)];
+        const met = criteria.filter(Boolean).length;
+        if (met <= 1) return 1;
+        if (met === 2) return 2;
+        if (met === 3) return 3;
+        return 4;
+      }
+
+      function updateUI() {
+        const pwd = passwordInput.value;
+        const strength = getStrength(pwd);
+
+        strengthLabel.textContent = pwd.length ? LABELS[strength - 1] : 'Strength';
+        strengthLabel.classList.toggle('has-strength', pwd.length > 0);
+        strengthMeter.setAttribute('aria-valuenow', strength);
+
+        bars.forEach((bar, i) => {
+          bar.classList.toggle('filled', i < strength);
+          bar.style.background = i < strength ? COLORS[strength - 1] : '';
+        });
+
+        reqLength.classList.toggle('met', hasLength(pwd));
+        reqUpper.classList.toggle('met', hasUpper(pwd));
+        reqNumber.classList.toggle('met', hasNumber(pwd));
+        reqSpecial.classList.toggle('met', hasSpecial(pwd));
+      }
+
+      toggleBtn.addEventListener('click', function () {
+        const isPassword = passwordInput.type === 'password';
+        passwordInput.type = isPassword ? 'text' : 'password';
+        iconEye.style.display = isPassword ? 'none' : 'block';
+        iconEyeOff.style.display = isPassword ? 'block' : 'none';
+        toggleBtn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+      });
+
+      passwordInput.addEventListener('input', updateUI);
+      passwordInput.addEventListener('paste', function () { setTimeout(updateUI, 0); });
+
+      copyBtn.addEventListener('click', function () {
+        const pwd = passwordInput.value;
+        if (!pwd) return;
+        navigator.clipboard.writeText(pwd).then(function () {
+          copyBtn.classList.add('copied');
+          copyBtn.textContent = 'Copied!';
+          setTimeout(function () {
+            copyBtn.classList.remove('copied');
+            copyBtn.textContent = 'Copy Password';
+          }, 2000);
+        });
+      });
+
+      updateUI();
+    })();
+  </script>
+</body>
+</html>
